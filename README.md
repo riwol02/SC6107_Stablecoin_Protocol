@@ -1,6 +1,7 @@
 # DSC Protocol — Decentralized Stable Coin
 
 > **SC6107: Blockchain Development Fundamentals (Part 2)**
+> Development Project · Option 6: Stablecoin Protocol
 
 A fully on-chain, over-collateralized stablecoin protocol inspired by MakerDAO. Users deposit crypto assets (WETH, WBTC) as collateral and mint **DSC** tokens pegged 1:1 to the US Dollar. The protocol is entirely governed by immutable smart contracts — no admin keys, no intermediaries.
 
