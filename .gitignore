@@ -1,0 +1,27 @@
+# Foundry
+contracts/out/
+contracts/cache/
+broadcast/
+
+# Environment
+.env
+.env.local
+
+# Dependencies
+lib/
+node_modules/
+frontend/node_modules/
+frontend/build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Coverage
+lcov.info
+coverage/
