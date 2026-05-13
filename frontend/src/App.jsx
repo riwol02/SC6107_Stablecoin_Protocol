@@ -35,21 +35,22 @@ function StatCard({ label, value, sub, accent }) {
 }
 
 function TxButton({ onClick, disabled, loading, children, variant = "primary" }) {
-  const bg = variant === "danger" ? "#ef4444" : variant === "secondary" ? "transparent" : "#6366f1";
-  const border = variant === "secondary" ? "0.5px solid var(--border)" : "none";
+  const isDisabled = disabled || loading;
+  const bg = variant === "danger" ? "#ef4444" : "#6366f1";
+  const borderColor = isDisabled ? "var(--border)" : variant === "danger" ? "#dc2626" : "#4f46e5";
   return (
     <button
       onClick={onClick}
-      disabled={disabled || loading}
+      disabled={isDisabled}
       style={{
-        background: disabled || loading ? "var(--bg2)" : bg,
-        border,
-        color: disabled || loading ? "var(--text3)" : variant === "secondary" ? "var(--text1)" : "#fff",
+        background: isDisabled ? "var(--bg2)" : bg,
+        border: `0.5px solid ${borderColor}`,
+        color: isDisabled ? "var(--text3)" : "#fff",
         borderRadius: 8,
         padding: "10px 20px",
         fontWeight: 500,
         fontSize: 14,
-        cursor: disabled || loading ? "not-allowed" : "pointer",
+        cursor: isDisabled ? "not-allowed" : "pointer",
         transition: "opacity 0.15s",
         width: "100%",
       }}
@@ -186,7 +187,7 @@ function RedeemBurnPanel({ protocol }) {
       <FormGroup label="DSC to Burn">
         <Input value={dscAmount} onChange={setDscAmount} placeholder="e.g. 500" />
       </FormGroup>
-      <TxButton onClick={handleSubmit} loading={protocol.txPending} disabled={!collateral || !dscAmount} variant="secondary">
+      <TxButton onClick={handleSubmit} loading={protocol.txPending} disabled={!collateral || !dscAmount}>
         Redeem & Burn
       </TxButton>
       {result && (

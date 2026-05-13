@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import {AggregatorV3Interface} from "../src/interfaces/AggregatorV3Interface.sol";
 
 /// @dev Minimal mock of a Chainlink AggregatorV3Interface for unit testing.
 ///      Allows manually setting price and simulating stale / negative prices.

@@ -444,6 +444,32 @@ forge script contracts/script/DeployDSC.s.sol \
   -vvvv
 ```
 
+### Local Setup for Test Account
+
+After starting `anvil`, you can deploy the local contracts and fund the default
+MetaMask test account in one step:
+
+```bash
+./scripts/setup-local-test-account.sh
+```
+
+Default funded account:
+
+```text
+0xa208DCE30A29B85099e8acDcc696276E4932894b
+```
+
+The script:
+- Deploys the DSC protocol to local Anvil
+- Sets the test account's local ETH balance for gas
+- Mints `100 WETH` and `100 WBTC` to the test account
+
+To fund a different account:
+
+```bash
+TEST_ACCOUNT=0xYourAddress ./scripts/setup-local-test-account.sh
+```
+
 The deployment script automatically:
 - Deploys Mock WETH and WBTC tokens
 - Deploys Mock Chainlink price feeds ($2,000/ETH, $60,000/BTC)

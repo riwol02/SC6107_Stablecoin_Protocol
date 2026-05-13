@@ -81,12 +81,28 @@ contract DSCEngineTest is Test {
         assertEq(expectedUsd, actualUsd);
     }
 
+    function testGetUsdValueForEightDecimalCollateral() public view {
+        uint256 btcAmount = 0.1e8; // 0.1 WBTC
+        // $60,000 * 0.1 = $6,000
+        uint256 expectedUsd = 6_000e18;
+        uint256 actualUsd = dscEngine.getUsdValue(config.wbtc, btcAmount);
+        assertEq(expectedUsd, actualUsd);
+    }
+
     function testGetTokenAmountFromUsd() public view {
         uint256 usdAmount = 100e18; // $100
         // $100 / $2,000 = 0.05 ETH
         uint256 expectedWeth = 0.05 ether;
         uint256 actualWeth = dscEngine.getTokenAmountFromUsd(config.weth, usdAmount);
         assertEq(expectedWeth, actualWeth);
+    }
+
+    function testGetEightDecimalTokenAmountFromUsd() public view {
+        uint256 usdAmount = 3_000e18; // $3,000
+        // $3,000 / $60,000 = 0.05 WBTC
+        uint256 expectedWbtc = 0.05e8;
+        uint256 actualWbtc = dscEngine.getTokenAmountFromUsd(config.wbtc, usdAmount);
+        assertEq(expectedWbtc, actualWbtc);
     }
 
     /*//////////////////////////////////////////////////////////////

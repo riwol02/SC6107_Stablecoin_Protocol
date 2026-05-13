@@ -3,8 +3,9 @@ pragma solidity ^0.8.24;
 
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import {AggregatorV3Interface} from "./interfaces/AggregatorV3Interface.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {DSCoin} from "./DSCoin.sol";
@@ -370,23 +371,25 @@ contract DSCEngine is ReentrancyGuard, Pausable, Ownable {
 
     /// @notice Returns the USD value of a given amount of a collateral token.
     /// @param token  The ERC-20 collateral token address.
-    /// @param amount Amount of tokens (in token's native decimals, assumed 18).
+    /// @param amount Amount of tokens (in token's native decimals).
     /// @return       USD value scaled to 1e18.
     function getUsdValue(address token, uint256 amount) public view returns (uint256) {
         AggregatorV3Interface priceFeed = AggregatorV3Interface(s_priceFeeds[token]);
         (, int256 price,,,) = priceFeed.staleCheckLatestRoundData();
-        // price has 8 decimals, amount has 18 decimals → result has 18 decimals
-        return ((uint256(price) * ADDITIONAL_FEED_PRECISION) * amount) / PRECISION;
+        uint256 tokenPrecision = 10 ** IERC20Metadata(token).decimals();
+        // price has 8 decimals; ADDITIONAL_FEED_PRECISION scales it to 18 decimals.
+        return ((uint256(price) * ADDITIONAL_FEED_PRECISION) * amount) / tokenPrecision;
     }
 
     /// @notice Returns the token amount equivalent to a USD value.
     /// @param token          The collateral token address.
     /// @param usdAmountInWei USD amount scaled to 1e18.
-    /// @return               Token amount (in token's native decimals, assumed 18).
+    /// @return               Token amount (in token's native decimals).
     function getTokenAmountFromUsd(address token, uint256 usdAmountInWei) public view returns (uint256) {
         AggregatorV3Interface priceFeed = AggregatorV3Interface(s_priceFeeds[token]);
         (, int256 price,,,) = priceFeed.staleCheckLatestRoundData();
-        return (usdAmountInWei * PRECISION) / (uint256(price) * ADDITIONAL_FEED_PRECISION);
+        uint256 tokenPrecision = 10 ** IERC20Metadata(token).decimals();
+        return (usdAmountInWei * tokenPrecision) / (uint256(price) * ADDITIONAL_FEED_PRECISION);
     }
 
     /// @notice Returns the total USD value of all collateral deposited by a user.
