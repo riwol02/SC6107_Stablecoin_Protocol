@@ -706,5 +706,3 @@ stablecoin-protocol/
 ## Disclaimer
 
 This protocol was developed as an academic project for SC6107. It has not undergone a professional security audit. **Do not deploy to Ethereum Mainnet or use with real funds** without a thorough third-party audit.
-
-AI tools (Claude) were used to assist with code generation and documentation. All code has been reviewed, tested, and is understood by the team. AI-generated code is clearly documented and was subjected to the same testing requirements as manually written code.
