@@ -417,11 +417,11 @@ forge snapshot
 ### Prerequisites
 
 
-| Tool    | Version | Install                                                               |
-| ------- | ------- | --------------------------------------------------------------------- |
-| Foundry | Latest  | `curl -L [https://foundry.paradigm.xyz](https://foundry.paradigm.xyz) |
-| Node.js | ≥ 18    | [https://nodejs.org](https://nodejs.org)                              |
-| Git     | Any     | [https://git-scm.com](https://git-scm.com)                            |
+| Tool    | Version | Install                                       |
+| ------- | ------- | --------------------------------------------- |
+| Foundry | Latest  | `curl -L https://foundry.paradigm.xyz | bash` |
+| Node.js | ≥ 18    | [https://nodejs.org](https://nodejs.org)      |
+| Git     | Any     | [https://git-scm.com](https://git-scm.com)    |
 
 
 ### Installation
@@ -651,12 +651,12 @@ stablecoin-protocol/
 ## Team
 
 
-| Member        | Role                       | Responsibilities                                                                 |
-| ------------- | -------------------------- | -------------------------------------------------------------------------------- |
-| Liang Jinghan | Smart Contract Lead /Docs  | `DSCEngine.sol` core logic, liquidation mechanism, README, architecture diagrams |
-| Tang Ziyue    | Security Engineer          | `OracleLib.sol`, security analysis, Slither audit                                |
-| Yuan Jinxi    | Test Engineer              | Unit tests, fuzz tests, invariant tests, coverage                                |
-| Zhang Xiyue   | Frontend Developer/ DevOps | React dashboard, `useProtocol` hook, UX design, Deployment scripts               |
+| Member   | Role                | Responsibilities                                  |
+| -------- | ------------------- | ------------------------------------------------- |
+| Liang Jinghan | Smart Contract Lead /Docs | `DSCEngine.sol` core logic, liquidation mechanism, README, architecture diagrams |
+| Tang Ziyue | Security Engineer   | `OracleLib.sol`, security analysis, Slither audit |
+| Yuan Jinxi | Test Engineer       | Unit tests, fuzz tests, invariant tests, coverage |
+| Zhang Xiyue | Frontend Developer/ DevOps  | React dashboard, `useProtocol` hook, UX design, Deployment scripts    |
 
 
 ---
