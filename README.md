@@ -21,7 +21,10 @@ A fully on-chain, over-collateralized stablecoin protocol inspired by MakerDAO. 
 - [Frontend](#frontend)
 - [Project Structure](#project-structure)
 - [Team](#team)
+- [Course Topics Demonstrated](#course-topics-demonstrated)
+- [Known Limitations & Future Work](#known-limitations--future-work)
 - [References](#references)
+- [Disclaimer](#disclaimer)
 
 ---
 
@@ -33,15 +36,17 @@ DSC (Decentralized Stable Coin) is a USD-pegged ERC-20 token backed by exogenous
 
 ### Key Parameters
 
-| Parameter | Value | Description |
-|---|---|---|
-| Peg | 1 DSC = $1 USD | Maintained via collateralization |
-| Collateral types | WETH, WBTC | Exogenous crypto assets |
-| Collateral ratio | 150% | $150 collateral required per $100 DSC |
-| Liquidation threshold | 150% | Positions below this are liquidatable |
-| Liquidation bonus | 10% | Reward paid to liquidators |
-| Stability fee | 0% | No interest charged (v1) |
-| Price oracle | Chainlink | 3-hour stale price protection |
+
+| Parameter             | Value          | Description                           |
+| --------------------- | -------------- | ------------------------------------- |
+| Peg                   | 1 DSC = $1 USD | Maintained via collateralization      |
+| Collateral types      | WETH, WBTC     | Exogenous crypto assets               |
+| Collateral ratio      | 150%           | $150 collateral required per $100 DSC |
+| Liquidation threshold | 150%           | Positions below this are liquidatable |
+| Liquidation bonus     | 10%            | Reward paid to liquidators            |
+| Stability fee         | 0%             | No interest charged (v1)              |
+| Price oracle          | Chainlink      | 3-hour stale price protection         |
+
 
 ### Core Invariant
 
@@ -53,13 +58,15 @@ This invariant is enforced by the liquidation mechanism and verified by the inva
 
 ### Comparison with Existing Stablecoins
 
-| Property | USDT / USDC | UST (Terra) | DAI | **DSC** |
-|---|---|---|---|---|
-| Backing | Fiat (off-chain) | Algorithmic | Crypto (on-chain) | Crypto (on-chain) |
-| Centralization | High | None | Low | **None** |
-| Collateral | USD in banks | LUNA token | ETH, WBTC | **WETH, WBTC** |
-| Death spiral risk | No | **Yes** | Low | **No** |
-| Audit-able | Requires trust | On-chain | On-chain | **On-chain** |
+
+| Property          | USDT / USDC      | UST (Terra) | DAI               | **DSC**           |
+| ----------------- | ---------------- | ----------- | ----------------- | ----------------- |
+| Backing           | Fiat (off-chain) | Algorithmic | Crypto (on-chain) | Crypto (on-chain) |
+| Centralization    | High             | None        | Low               | **None**          |
+| Collateral        | USD in banks     | LUNA token  | ETH, WBTC         | **WETH, WBTC**    |
+| Death spiral risk | No               | **Yes**     | Low               | **No**            |
+| Audit-able        | Requires trust   | On-chain    | On-chain          | **On-chain**      |
+
 
 DSC follows the DAI model (exogenous over-collateralization) rather than the UST model (endogenous algorithmic), making it structurally resistant to death spirals.
 
@@ -189,6 +196,7 @@ function burn(uint256 amount) public override onlyOwner
 ```
 
 Key properties:
+
 - Ownership transferred to `DSCEngine` at deployment
 - No public minting — supply is fully controlled by collateral backing
 - Inherits `ERC20Burnable` from OpenZeppelin 5.x
@@ -251,16 +259,18 @@ function staleCheckLatestRoundData(AggregatorV3Interface priceFeed)
 
 ### Threats Addressed
 
-| Threat | Mitigation | Status |
-|---|---|---|
-| Reentrancy | `ReentrancyGuard` on all state-changing functions | ✅ |
-| Oracle manipulation | Chainlink multi-source + 3h stale timeout | ✅ |
-| Integer overflow | Solidity 0.8.x built-in protection | ✅ |
-| Silent transfer failure | `SafeERC20` for all ERC-20 transfers | ✅ |
-| Admin key compromise | No upgradeable proxy; owner = multisig in prod | ✅ |
-| Flash loan attacks | Checks-effects-interactions; no price reads mid-tx | ✅ |
-| Death spiral | Exogenous collateral only (WETH/WBTC ≠ DSC) | ✅ |
-| Emergency scenarios | `Pausable` — owner can halt all operations | ✅ |
+
+| Threat                  | Mitigation                                         | Status |
+| ----------------------- | -------------------------------------------------- | ------ |
+| Reentrancy              | `ReentrancyGuard` on all state-changing functions  | ✅      |
+| Oracle manipulation     | Chainlink multi-source + 3h stale timeout          | ✅      |
+| Integer overflow        | Solidity 0.8.x built-in protection                 | ✅      |
+| Silent transfer failure | `SafeERC20` for all ERC-20 transfers               | ✅      |
+| Admin key compromise    | No upgradeable proxy; owner = multisig in prod     | ✅      |
+| Flash loan attacks      | Checks-effects-interactions; no price reads mid-tx | ✅      |
+| Death spiral            | Exogenous collateral only (WETH/WBTC ≠ DSC)        | ✅      |
+| Emergency scenarios     | `Pausable` — owner can halt all operations         | ✅      |
+
 
 ### Checks-Effects-Interactions Pattern
 
@@ -298,34 +308,38 @@ slither contracts/src/ \
   --solc-remaps "@openzeppelin=lib/openzeppelin-contracts @chainlink=lib/chainlink"
 ```
 
-Expected findings and resolutions are documented in [`docs/security-analysis.md`](docs/security-analysis.md).
+Expected findings and resolutions are documented in `[docs/security-analysis.md](docs/security-analysis.md)`.
 
 ---
 
 ## Gas Optimization
 
-| Technique | Saving | Applied |
-|---|---|---|
-| `immutable` for DSCoin address | ~2,098 gas/read | ✅ |
-| Custom errors instead of `require` strings | ~200–500 gas/revert | ✅ |
-| `constant` for protocol parameters | ~2,100 gas/read | ✅ |
-| Cached array length in loops | ~97 gas/iteration | ✅ |
-| `SafeERC20` over manual return checks | Equivalent, safer | ✅ |
-| Revert-early modifiers | Saves gas on invalid input | ✅ |
+
+| Technique                                  | Saving                     | Applied |
+| ------------------------------------------ | -------------------------- | ------- |
+| `immutable` for DSCoin address             | ~2,098 gas/read            | ✅       |
+| Custom errors instead of `require` strings | ~200–500 gas/revert        | ✅       |
+| `constant` for protocol parameters         | ~2,100 gas/read            | ✅       |
+| Cached array length in loops               | ~97 gas/iteration          | ✅       |
+| `SafeERC20` over manual return checks      | Equivalent, safer          | ✅       |
+| Revert-early modifiers                     | Saves gas on invalid input | ✅       |
+
 
 ### Benchmarks (Anvil local fork)
 
-| Function | Gas Used |
-|---|---|
-| `depositCollateral` | ~65,000 |
-| `mintDsc` | ~75,000 |
-| `depositCollateralAndMintDsc` | ~130,000 |
-| `redeemCollateral` | ~55,000 |
-| `burnDsc` | ~60,000 |
-| `redeemCollateralForDsc` | ~115,000 |
-| `liquidate` | ~140,000 |
 
-Full analysis in [`docs/gas-optimization.md`](docs/gas-optimization.md).
+| Function                      | Gas Used |
+| ----------------------------- | -------- |
+| `depositCollateral`           | ~65,000  |
+| `mintDsc`                     | ~75,000  |
+| `depositCollateralAndMintDsc` | ~130,000 |
+| `redeemCollateral`            | ~55,000  |
+| `burnDsc`                     | ~60,000  |
+| `redeemCollateralForDsc`      | ~115,000 |
+| `liquidate`                   | ~140,000 |
+
+
+Full analysis in `[docs/gas-optimization.md](docs/gas-optimization.md)`.
 
 ---
 
@@ -333,12 +347,14 @@ Full analysis in [`docs/gas-optimization.md`](docs/gas-optimization.md).
 
 ### Test Suite Overview
 
-| Type | File | Coverage |
-|---|---|---|
-| Unit | `DSCEngineTest.t.sol` | 30+ tests, all public functions |
-| Unit | `DSCoinTest.t.sol` | Token mint/burn/access control |
-| Integration | `DSCIntegrationTest.t.sol` | 5 end-to-end user scenarios |
-| Fuzz | `DSCFuzzTest.t.sol` | Property-based + invariant tests |
+
+| Type        | File                       | Coverage                         |
+| ----------- | -------------------------- | -------------------------------- |
+| Unit        | `DSCEngineTest.t.sol`      | 30+ tests, all public functions  |
+| Unit        | `DSCoinTest.t.sol`         | Token mint/burn/access control   |
+| Integration | `DSCIntegrationTest.t.sol` | 5 end-to-end user scenarios      |
+| Fuzz        | `DSCFuzzTest.t.sol`        | Property-based + invariant tests |
+
 
 ### Integration Test Scenarios
 
@@ -386,11 +402,13 @@ forge snapshot
 
 ### Coverage Targets
 
-| Contract | Line Coverage | Branch Coverage |
-|---|---|---|
-| `DSCEngine.sol` | > 85% | > 80% |
-| `DSCoin.sol` | 100% | 100% |
-| `OracleLib.sol` | 100% | 100% |
+
+| Contract        | Line Coverage | Branch Coverage |
+| --------------- | ------------- | --------------- |
+| `DSCEngine.sol` | > 85%         | > 80%           |
+| `DSCoin.sol`    | 100%          | 100%            |
+| `OracleLib.sol` | 100%          | 100%            |
+
 
 ---
 
@@ -398,11 +416,13 @@ forge snapshot
 
 ### Prerequisites
 
-| Tool | Version | Install |
-|---|---|---|
-| Foundry | Latest | `curl -L https://foundry.paradigm.xyz \| bash` |
-| Node.js | ≥ 18 | https://nodejs.org |
-| Git | Any | https://git-scm.com |
+
+| Tool    | Version | Install                                       |
+| ------- | ------- | --------------------------------------------- |
+| Foundry | Latest  | `curl -L https://foundry.paradigm.xyz | bash` |
+| Node.js | ≥ 18    | [https://nodejs.org](https://nodejs.org)      |
+| Git     | Any     | [https://git-scm.com](https://git-scm.com)    |
+
 
 ### Installation
 
@@ -431,7 +451,7 @@ cp .env.example .env
 
 ## Deployment
 
-### Local (Anvil)
+### anvil
 
 ```bash
 # Terminal 1 — Start local blockchain
@@ -460,6 +480,7 @@ Default funded account:
 ```
 
 The script:
+
 - Deploys the DSC protocol to local Anvil
 - Sets the test account's local ETH balance for gas
 - Mints `100 WETH` and `100 WBTC` to the test account
@@ -471,6 +492,7 @@ TEST_ACCOUNT=0xYourAddress ./scripts/setup-local-test-account.sh
 ```
 
 The deployment script automatically:
+
 - Deploys Mock WETH and WBTC tokens
 - Deploys Mock Chainlink price feeds ($2,000/ETH, $60,000/BTC)
 - Deploys `DSCoin` and `DSCEngine`
@@ -505,14 +527,16 @@ const ADDRESSES = {
 
 ### Deployed Contract Addresses (Anvil — for reference)
 
-| Contract | Address |
-|---|---|
-| DSCoin | `0x5FC8d32690cc91D4c39d9d3abcBD16989F875707` |
-| DSCEngine | `0x0165878A594ca255338adfa4d48449f69242Eb8F` |
-| Mock WETH | `0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512` |
-| Mock WBTC | `0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0` |
+
+| Contract     | Address                                      |
+| ------------ | -------------------------------------------- |
+| DSCoin       | `0x5FC8d32690cc91D4c39d9d3abcBD16989F875707` |
+| DSCEngine    | `0x0165878A594ca255338adfa4d48449f69242Eb8F` |
+| Mock WETH    | `0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512` |
+| Mock WBTC    | `0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0` |
 | ETH/USD Feed | `0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9` |
 | BTC/USD Feed | `0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9` |
+
 
 ---
 
@@ -520,12 +544,14 @@ const ADDRESSES = {
 
 ### Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | React 18 |
-| Web3 library | ethers.js v6 |
-| Wallet | MetaMask (EIP-1193) |
-| Styling | Vanilla CSS with CSS variables (light/dark mode) |
+
+| Layer        | Technology                                       |
+| ------------ | ------------------------------------------------ |
+| Framework    | React 18                                         |
+| Web3 library | ethers.js v6                                     |
+| Wallet       | MetaMask (EIP-1193)                              |
+| Styling      | Vanilla CSS with CSS variables (light/dark mode) |
+
 
 ### Features
 
@@ -547,12 +573,14 @@ npm start
 
 Connect MetaMask to Anvil Local:
 
-| Field | Value |
-|---|---|
-| Network Name | Anvil Local |
-| RPC URL | http://127.0.0.1:8545 |
-| Chain ID | 31337 |
-| Currency Symbol | ETH |
+
+| Field           | Value                                          |
+| --------------- | ---------------------------------------------- |
+| Network Name    | Anvil Local                                    |
+| RPC URL         | [http://127.0.0.1:8545](http://127.0.0.1:8545) |
+| Chain ID        | 31337                                          |
+| Currency Symbol | ETH                                            |
+
 
 Mint test tokens (Anvil only):
 
@@ -622,40 +650,43 @@ stablecoin-protocol/
 
 ## Team
 
-| Member | Role | Responsibilities |
-|---|---|---|
-| Member 1 | Smart Contract Lead | `DSCEngine.sol` core logic, liquidation mechanism |
-| Member 2 | Security Engineer | `OracleLib.sol`, security analysis, Slither audit |
-| Member 3 | Test Engineer | Unit tests, fuzz tests, invariant tests, coverage |
-| Member 4 | Frontend Developer | React dashboard, `useProtocol` hook, UX design |
-| Member 5 | DevOps / Docs | Deployment scripts, README, architecture diagrams |
+
+| Member   | Role                | Responsibilities                                  |
+| -------- | ------------------- | ------------------------------------------------- |
+| Liang Jinghan | Smart Contract Lead /Docs | `DSCEngine.sol` core logic, liquidation mechanism, README, architecture diagrams |
+| Tang Ziyue | Security Engineer   | `OracleLib.sol`, security analysis, Slither audit |
+| Yuan Jinxi | Test Engineer       | Unit tests, fuzz tests, invariant tests, coverage |
+| Zhang Xiyue | Frontend Developer/ DevOps  | React dashboard, `useProtocol` hook, UX design, Deployment scripts    |
+
 
 ---
 
 ## Course Topics Demonstrated
 
-| SC6107 Topic | Where Demonstrated |
-|---|---|
-| ERC-20 token development | `DSCoin.sol` — custom mint/burn with access control |
-| Smart contract security patterns | `DSCEngine.sol` — ReentrancyGuard, CEI, Pausable |
-| DeFi protocol design | Over-collateralization, health factor, liquidation incentives |
-| Oracle integration | `OracleLib.sol` — Chainlink with stale price protection |
-| Foundry testing | Unit, integration, fuzz, and invariant test suites |
-| Gas optimization | Custom errors, immutables, constants, storage layout |
-| Frontend Web3 integration | ethers.js v6, MetaMask EIP-1193, React hooks |
-| Deployment scripting | Multi-network deploy with Anvil mock + Sepolia real feeds |
+
+| SC6107 Topic                     | Where Demonstrated                                            |
+| -------------------------------- | ------------------------------------------------------------- |
+| ERC-20 token development         | `DSCoin.sol` — custom mint/burn with access control           |
+| Smart contract security patterns | `DSCEngine.sol` — ReentrancyGuard, CEI, Pausable              |
+| DeFi protocol design             | Over-collateralization, health factor, liquidation incentives |
+| Oracle integration               | `OracleLib.sol` — Chainlink with stale price protection       |
+| Foundry testing                  | Unit, integration, fuzz, and invariant test suites            |
+| Gas optimization                 | Custom errors, immutables, constants, storage layout          |
+| Frontend Web3 integration        | ethers.js v6, MetaMask EIP-1193, React hooks                  |
+| Deployment scripting             | Multi-network deploy with Anvil mock + Sepolia real feeds     |
+
 
 ---
 
 ## Known Limitations & Future Work
 
-- [ ] **Single oracle per collateral** — Production should add TWAP as a secondary source
-- [ ] **No stability pool** — Instant liquidation (Liquity-style) would improve solvency during flash crashes
-- [ ] **No stability fee** — Future versions could add an interest rate model
-- [ ] **Owner is EOA** — Production deployment should use Gnosis Safe (3-of-5 multisig)
-- [ ] **No timelock on pause** — A timelock would prevent admin abuse
-- [ ] **Two collateral types only** — Protocol supports adding more via constructor
-- [ ] **No mobile-responsive frontend** — Future improvement
+- **Single oracle per collateral** — Production should add TWAP as a secondary source
+- **No stability pool** — Instant liquidation (Liquity-style) would improve solvency during flash crashes
+- **No stability fee** — Future versions could add an interest rate model
+- **Owner is EOA** — Production deployment should use Gnosis Safe (3-of-5 multisig)
+- **No timelock on pause** — A timelock would prevent admin abuse
+- **Two collateral types only** — Protocol supports adding more via constructor
+- **No mobile-responsive frontend** — Future improvement
 
 ---
 
