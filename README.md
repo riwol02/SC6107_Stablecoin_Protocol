@@ -417,11 +417,11 @@ forge snapshot
 ### Prerequisites
 
 
-| Tool    | Version | Install                                       |
-| ------- | ------- | --------------------------------------------- |
-| Foundry | Latest  | `curl -L https://foundry.paradigm.xyz | bash` |
-| Node.js | ≥ 18    | [https://nodejs.org](https://nodejs.org)      |
-| Git     | Any     | [https://git-scm.com](https://git-scm.com)    |
+| Tool    | Version | Install                                                               |
+| ------- | ------- | --------------------------------------------------------------------- |
+| Foundry | Latest  | `curl -L [https://foundry.paradigm.xyz](https://foundry.paradigm.xyz) |
+| Node.js | ≥ 18    | [https://nodejs.org](https://nodejs.org)                              |
+| Git     | Any     | [https://git-scm.com](https://git-scm.com)                            |
 
 
 ### Installation
@@ -651,12 +651,12 @@ stablecoin-protocol/
 ## Team
 
 
-| Member   | Role                | Responsibilities                                  |
-| -------- | ------------------- | ------------------------------------------------- |
-| Liang Jinghan | Smart Contract Lead /Docs | `DSCEngine.sol` core logic, liquidation mechanism, README, architecture diagrams |
-| Tang Ziyue | Security Engineer   | `OracleLib.sol`, security analysis, Slither audit |
-| Yuan Jinxi | Test Engineer       | Unit tests, fuzz tests, invariant tests, coverage |
-| Zhang Xiyue | Frontend Developer/ DevOps  | React dashboard, `useProtocol` hook, UX design, Deployment scripts    |
+| Member        | Role                       | Responsibilities                                                                 |
+| ------------- | -------------------------- | -------------------------------------------------------------------------------- |
+| Liang Jinghan | Smart Contract Lead /Docs  | `DSCEngine.sol` core logic, liquidation mechanism, README, architecture diagrams |
+| Tang Ziyue    | Security Engineer          | `OracleLib.sol`, security analysis, Slither audit                                |
+| Yuan Jinxi    | Test Engineer              | Unit tests, fuzz tests, invariant tests, coverage                                |
+| Zhang Xiyue   | Frontend Developer/ DevOps | React dashboard, `useProtocol` hook, UX design, Deployment scripts               |
 
 
 ---
@@ -706,5 +706,3 @@ stablecoin-protocol/
 ## Disclaimer
 
 This protocol was developed as an academic project for SC6107. It has not undergone a professional security audit. **Do not deploy to Ethereum Mainnet or use with real funds** without a thorough third-party audit.
-
-AI tools (Claude) were used to assist with code generation and documentation. All code has been reviewed, tested, and is understood by the team. AI-generated code is clearly documented and was subjected to the same testing requirements as manually written code.
