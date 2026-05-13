@@ -6,6 +6,7 @@ broadcast/
 # Environment
 .env
 .env.local
+.env.example
 
 # Dependencies
 lib/
